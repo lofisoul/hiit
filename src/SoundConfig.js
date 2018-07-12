@@ -51,8 +51,6 @@ class SoundConfig extends Component {
             </Col>
           </Clearfix>
         </FormGroup>
-        <audio className={`sfx sfx-${startSound.className} sfx-start`} src={startSound.src} type={startSound.type}></audio>
-        <audio className={`sfx sfx-${endSound.className} sfx-end`} src={endSound.src} type={endSound.type}></audio>
       </section>
     );
   }

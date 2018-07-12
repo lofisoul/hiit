@@ -165,7 +165,6 @@ class App extends Component {
   }
 
   playSound(sfx) {
-    console.log('hey');
     const audio = new Audio(sfx.src);
     audio.play();
   }

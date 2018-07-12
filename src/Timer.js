@@ -43,7 +43,7 @@ class Timer extends Component {
       return(
         <div className="btn-wrap">
           <Button bsStyle="success" onClick={this.props.resumeTimer}>Resume</Button>
-          <Button bsStyle="danger" disabled>Stop</Button>
+          <Button bsStyle="danger" onClick={this.props.stopTimer}>Stop</Button>
         </div>
       )
     }

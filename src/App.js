@@ -3,6 +3,7 @@ import './App.css';
 import Timer from './Timer';
 import Sequence from './Sequence';
 import moment from 'moment';
+import sfx from './audio';
 import * as timerStates from './timerStates';
 
 class App extends Component {
@@ -15,7 +16,10 @@ class App extends Component {
       timerState:timerStates.NOT_SET,
       timer: null,
       sequence: ['a','b','c','d','e','f'],
-      round:1
+      round:1,
+      sfx: sfx,
+      startSound: sfx[0],
+      endSound: sfx[0]
     }
 
     this.setBaseTime = this.setBaseTime.bind(this);
@@ -26,6 +30,8 @@ class App extends Component {
     this.pauseTimer = this.pauseTimer.bind(this);
     this.resumeTimer = this.resumeTimer.bind(this);
     this.completeRound = this.completeRound.bind(this);
+    this.changeSfx = this.changeSfx.bind(this);
+    this.playSound = this.playSound.bind(this);
   }
 
   //Timer
@@ -57,7 +63,8 @@ class App extends Component {
     this.setState({
       timerState: timerStates.RUNNING,
       timer: setInterval(this.reduceTimer, 1000)
-    })
+    });
+    this.playSound(this.state.startSound);
   }
 
   reduceTimer() {
@@ -74,6 +81,7 @@ class App extends Component {
         && this.state.currentTime.get('minutes') === 0
         && this.state.currentTime.get('seconds') === 0) {
           this.completeRound();
+          this.playSound(this.state.endSound);
           return
         }
     const newTime = moment.duration(this.state.currentTime);
@@ -108,7 +116,8 @@ class App extends Component {
       this.setState({
         timerState: timerStates.NOT_SET,
         timer:null,
-        currentTime: moment.duration(this.state.baseTime)
+        currentTime: moment.duration(this.state.baseTime),
+        round:1
       })
   }
 
@@ -140,6 +149,27 @@ class App extends Component {
   //sequencer
 
 
+  //audio
+
+  changeSfx(e) {
+    const val = e.target.value;
+
+    if(e.target.id === 'startSound') {
+      this.setState({startSound: sfx[val]});
+    }
+
+    if(e.target.id === 'endSound') {
+      this.setState({endSound: sfx[val]});
+    }
+
+  }
+
+  playSound(sfx) {
+    console.log('hey');
+    const audio = new Audio(sfx.src);
+    audio.play();
+  }
+
   render() {
     return (
       <div className="App">
@@ -158,7 +188,12 @@ class App extends Component {
           pauseTimer={this.pauseTimer}
           resumeTimer={this.resumeTimer}
           round={this.state.round}
+          sfx={this.state.sfx}
+          startSound={this.state.startSound}
+          endSound={this.state.endSound}
+          changeSfx={this.changeSfx}
           />
+
       </div>
     );
   }

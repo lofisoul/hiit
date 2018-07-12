@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Panel, Grid, Row, Col, FormGroup, ControlLabel, FormControl, Clearfix, Button } from 'react-bootstrap';
 import * as timerStates from './timerStates';
+import SoundConfig from './SoundConfig';
 
 class Timer extends Component {
 
@@ -55,7 +56,7 @@ class Timer extends Component {
   }
 
   render() {
-    const {currentTime, baseTime, setBaseTime, handleChange, timerState, startTimer, pauseTimer, round} = this.props;
+    const {currentTime, baseTime, setBaseTime, handleChange, timerState, startTimer, pauseTimer, round, sfx, changeSfx, startSound, endSound} = this.props;
     return(
     <section className="timer">
       <Panel className="app-content">
@@ -112,6 +113,11 @@ class Timer extends Component {
                       </Col>
                     </Clearfix>
                   </FormGroup>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <SoundConfig sfx={sfx} changeSfx={changeSfx} startSound={startSound} endSound={endSound} />
                 </Col>
               </Row>
             </Grid>

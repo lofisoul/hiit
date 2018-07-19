@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './App.scss';
 import Timer from './Timer';
 import Sequence from './Sequence';
 import moment from 'moment';

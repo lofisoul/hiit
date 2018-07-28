@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, Grid, Row, Col, FormGroup, ControlLabel, FormControl, Clearfix} from 'react-bootstrap';
+import { Col, FormGroup, ControlLabel, FormControl, Clearfix} from 'react-bootstrap';
 
 class SoundConfig extends Component {
   render() {
@@ -37,7 +37,7 @@ class SoundConfig extends Component {
             <Col sm={9}>
               <FormControl
                 componentClass="select"
-                placeholder={`${startSound.sound}`}
+                placeholder={`${endSound.sound}`}
                 onChange={changeSfx}
                 >
                   {

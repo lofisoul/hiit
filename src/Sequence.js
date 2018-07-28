@@ -5,12 +5,12 @@ import * as timerStates from './timerStates';
 class Sequence extends Component {
 
   render() {
-    const {seq, round} = this.props;
+    const {seq, currentRound} = this.props;
     return(
       <section className="sequence">
         {
-          seq.map((seq,index) => {
-            if(index+1 === round) {
+          seq.routine.map((seq,index) => {
+            if(index+1 === currentRound) {
               return (
                 <figure key={index} className={`seq seq-${index} seq-active`}>{seq}</figure>
               )

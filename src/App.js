@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.scss';
+import './styles/scss/App.scss';
 import Timer from './Timer';
 import Sequence from './Sequence';
 import moment from 'moment';
@@ -15,8 +15,12 @@ class App extends Component {
       baseTime: moment.duration(5, 'seconds'), //time that it always sets to
       timerState:timerStates.NOT_SET,
       timer: null,
-      sequence: ['a','b','c','d','e','f'],
-      round:1,
+      sequence: {
+          rounds: 6,
+          sets: 6,
+          routine: ['a','b','c','d','e','f']
+      },
+      currentRound:1,
       sfx: sfx,
       startSound: sfx[0],
       endSound: sfx[0]
@@ -69,14 +73,14 @@ class App extends Component {
 
   reduceTimer() {
 
-    if(this.state.round === this.state.sequence.length
+    if(this.state.currentRound === this.state.sequence.rounds
       && this.state.currentTime.get('hours') === 0
       && this.state.currentTime.get('minutes') === 0
       && this.state.currentTime.get('seconds') === 0) {
         this.completeTimer();
         return
       }
-      if(this.state.round < this.state.sequence.length
+      if(this.state.currentRound < this.state.sequence.rounds
         && this.state.currentTime.get('hours') === 0
         && this.state.currentTime.get('minutes') === 0
         && this.state.currentTime.get('seconds') === 0) {
@@ -127,7 +131,7 @@ class App extends Component {
     }
 
     this.setState({
-      round: this.state.round+1,
+      currentRound: this.state.currentRound+1,
       currentTime: moment.duration(this.state.baseTime),
       timer: setInterval(this.reduceTimer, 1000)
     })
@@ -142,7 +146,7 @@ class App extends Component {
       timerState: timerStates.COMPLETE,
       timer:null,
       currentTime: moment.duration(this.state.baseTime),
-      round:1
+      currentRound:1
     })
   }
 
@@ -174,7 +178,7 @@ class App extends Component {
       <div className="App">
         <Sequence
           seq={this.state.sequence}
-          round={this.state.round}
+          currentRound={this.state.currentRound}
           />
         <Timer
           currentTime={this.state.currentTime}
@@ -186,7 +190,7 @@ class App extends Component {
           stopTimer={this.stopTimer}
           pauseTimer={this.pauseTimer}
           resumeTimer={this.resumeTimer}
-          round={this.state.round}
+          currentRound={this.state.currentRound}
           sfx={this.state.sfx}
           startSound={this.state.startSound}
           endSound={this.state.endSound}

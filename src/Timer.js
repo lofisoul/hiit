@@ -50,13 +50,13 @@ class Timer extends Component {
 
     if (this.props.timerState === timerStates.COMPLETE) {
       return(
-        <Button bsStyle="primary" onClick={this.props.startTimer}>End</Button>
+        <Button bsStyle="primary" onClick={this.props.stopTimer}>End</Button>
       )
     }
   }
 
   render() {
-    const {currentTime, baseTime, setBaseTime, handleChange, timerState, startTimer, pauseTimer, round, sfx, changeSfx, startSound, endSound} = this.props;
+    const {currentTime, baseTime, setBaseTime, handleChange, timerState, startTimer, pauseTimer, currentRound, sfx, changeSfx, startSound, endSound} = this.props;
     return(
     <section className="timer">
       <Panel className="app-content">
@@ -70,7 +70,7 @@ class Timer extends Component {
             <Row>
             <Col xs={12}>
               <h2 className="text-center">{`${this.leftPad(currentTime.get('minutes'))}:${this.leftPad(currentTime.get('seconds'))}`}</h2>
-              <h4 className="text-center">{`Round: ${round}`}</h4>
+              <h4 className="text-center">{`Round: ${currentRound}`}</h4>
             </Col>
           </Row>
           <Row>

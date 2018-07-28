@@ -36,6 +36,7 @@ class App extends Component {
     this.completeRound = this.completeRound.bind(this);
     this.changeSfx = this.changeSfx.bind(this);
     this.playSound = this.playSound.bind(this);
+    this.changeInterval = this.changeInterval.bind(this);
   }
 
   //Timer
@@ -152,6 +153,23 @@ class App extends Component {
 
   //sequencer
 
+  changeInterval(e) {
+    let seq = {...this.state.sequence};
+    console.log(seq);
+    const val = parseInt(e.target.value);
+    console.log(val);
+    if(e.target.id === 'sets') {
+      seq.sets = val;
+      console.log(typeof val);
+      console.log(seq);
+      this.setState({sequence:seq});
+    }
+    if(e.target.id === 'rounds') {
+      seq.rounds = val;
+      this.setState({sequence:seq});
+    }
+  }
+
 
   //audio
 
@@ -191,10 +209,12 @@ class App extends Component {
           pauseTimer={this.pauseTimer}
           resumeTimer={this.resumeTimer}
           currentRound={this.state.currentRound}
+          changeInterval={this.changeInterval}
           sfx={this.state.sfx}
           startSound={this.state.startSound}
           endSound={this.state.endSound}
           changeSfx={this.changeSfx}
+          seq={this.state.sequence}
           />
 
       </div>

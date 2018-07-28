@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Panel, Grid, Row, Col, FormGroup, ControlLabel, FormControl, Clearfix, Button } from 'react-bootstrap';
 import * as timerStates from './timerStates';
 import SoundConfig from './SoundConfig';
+import SeqConfig from './SeqConfig';
 
 class Timer extends Component {
 
@@ -56,7 +57,7 @@ class Timer extends Component {
   }
 
   render() {
-    const {currentTime, baseTime, setBaseTime, handleChange, timerState, startTimer, pauseTimer, currentRound, sfx, changeSfx, startSound, endSound} = this.props;
+    const {currentTime, baseTime, setBaseTime, handleChange, timerState, startTimer, pauseTimer, currentRound, changeInterval, sfx, changeSfx, startSound, endSound, seq} = this.props;
     return(
     <section className="timer">
       <Panel className="app-content">
@@ -118,6 +119,11 @@ class Timer extends Component {
               <Row>
                 <Col xs={12}>
                   <SoundConfig sfx={sfx} changeSfx={changeSfx} startSound={startSound} endSound={endSound} />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  <SeqConfig changeInterval={changeInterval} seq={seq} />
                 </Col>
               </Row>
             </Grid>

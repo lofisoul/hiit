@@ -156,7 +156,7 @@ class App extends Component {
   changeInterval(e) {
     let seq = {...this.state.sequence};
     console.log(seq);
-    const val = parseInt(e.target.value);
+    const val = parseInt(e.target.value) || 0;
     console.log(val);
     if(e.target.id === 'sets') {
       seq.sets = val;

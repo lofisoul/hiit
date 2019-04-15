@@ -4,6 +4,15 @@ $celesteAlt: #59AFB2;
 .app-content {
   margin: 50px 20px;
   padding:40px;
+  &.appstate-1 {
+    background:$celeste;
+  }
+  &.appstate-2 {
+    background: yellow;
+  }
+  &.appstate-3 {
+    background: pink;
+  }
   @media screen and (min-width:768px) {
     .app-content {
       margin:50px auto;

@@ -19,7 +19,7 @@ import * as timerStates from './timerStates';
 class Sequence extends Component {
 
   render() {
-    const {seq, currentRound} = this.props;
+    const {seq, currentRound, currentSet} = this.props;
     return(
       <section className="sequence">
 
@@ -41,7 +41,7 @@ class Sequence extends Component {
         <div className="sets">
           {
             Array(seq.sets).fill().map((seq,index) => {
-              if(index+1 === currentRound) {
+              if(index+1 === currentSet) {
                 return (
                   <figure key={index} className={`seq set-${index+1} set-active`}>{index+1}</figure>
                 )

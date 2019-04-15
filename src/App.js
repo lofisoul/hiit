@@ -12,28 +12,35 @@ class App extends Component {
 
     this.state = {
       currentTime: moment.duration(5, 'seconds'),
-      baseTime: moment.duration(5, 'seconds'), //time that it always sets to
+      baseTime: moment.duration(10, 'seconds'), //time that it always sets to
+      workTime:moment.duration(5,'seconds'),
+      restTime:moment.duration(5,'seconds'),
       timerState:timerStates.NOT_SET,
       timer: null,
       sequence: {
-          rounds: 6,
+          rounds: 4,
           sets: 6,
           routine: ['a','b','c','d','e','f']
       },
       currentRound:1,
+      currentSet: 1,
       sfx: sfx,
       startSound: sfx[0],
-      endSound: sfx[0]
+      endSound: sfx[1],
+      endSetSound: sfx[3],
+      completeSound: sfx[2]
     }
 
     this.setBaseTime = this.setBaseTime.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.reduceTimer = this.reduceTimer.bind(this);
-    this.stopTimer = this.stopTimer.bind(this);
+    this.resetTimer = this.resetTimer.bind(this);
     this.pauseTimer = this.pauseTimer.bind(this);
     this.resumeTimer = this.resumeTimer.bind(this);
+    this.completeTimer = this.completeTimer.bind(this);
     this.completeRound = this.completeRound.bind(this);
+    this.completeSet = this.completeSet.bind(this);
     this.changeSfx = this.changeSfx.bind(this);
     this.playSound = this.playSound.bind(this);
     this.changeInterval = this.changeInterval.bind(this);
@@ -44,12 +51,14 @@ class App extends Component {
   setBaseTime(newBaseTime) {
     this.setState({
       baseTime:newBaseTime,
-      currentTime:newBaseTime
+      currentTime:newBaseTime,
+      workTime: newBaseTime
     })
   }
 
   handleChange(e) {
-    const newBaseTime = moment.duration(0);
+    let newBaseTime = this.state.baseTime;
+    //console.log(e.target);
 
     if(e.target.id === 'hours') {
       newBaseTime.subtract(newBaseTime.get('hour'), 'hours').add(parseInt(e.target.value,10), 'hours');
@@ -73,25 +82,35 @@ class App extends Component {
   }
 
   reduceTimer() {
-
-    if(this.state.currentRound === this.state.sequence.rounds
-      && this.state.currentTime.get('hours') === 0
-      && this.state.currentTime.get('minutes') === 0
-      && this.state.currentTime.get('seconds') === 0) {
-        this.completeTimer();
-        return
-      }
-      if(this.state.currentRound < this.state.sequence.rounds
-        && this.state.currentTime.get('hours') === 0
-        && this.state.currentTime.get('minutes') === 0
-        && this.state.currentTime.get('seconds') === 0) {
+    //complete a round
+    if(this.state.currentRound < this.state.sequence.rounds &&
+        this.state.currentTime.asMilliseconds() === 0) {
           this.completeRound();
           this.playSound(this.state.endSound);
+          this.startOverTimer();
           return
-        }
+    }
+    //complete a set
+    if(this.state.currentRound === this.state.sequence.rounds &&
+        this.state.currentSet < this.state.sequence.sets
+        && this.state.currentTime.asMilliseconds() === 0) {
+          this.completeSet();
+          this.playSound(this.state.endSetSound);
+          this.startOverTimer();
+          return
+    }
+    //complete session
+    if(this.state.currentRound === this.state.sequence.rounds && 
+      this.state.currentSet === this.state.sequence.sets 
+      && this.state.currentTime.asMilliseconds() === 0) {
+        this.playSound(this.state.completeSound);
+        this.completeTimer();
+        return
+    }
+
     const newTime = moment.duration(this.state.currentTime);
     newTime.subtract(1,'second');
-
+    console.log(this.state.currentTime.asMilliseconds());
     this.setState({
       currentTime:newTime
     })
@@ -113,7 +132,7 @@ class App extends Component {
     }
   }
 
-  stopTimer() {
+  resetTimer() {
       if(this.state.timer) {
         clearInterval(this.state.timer)
       }
@@ -126,19 +145,43 @@ class App extends Component {
       })
   }
 
+  startOverTimer() {
+    this.setState({
+      currentTime: this.state.workTime
+    })
+  }
+
   completeRound() {
     if(this.state.timer) {
       clearInterval(this.state.timer)
     }
 
+    //console.log(this.state.currentRound)
+    //console.log(this.state.sequence.rounds)    
+    
+    
     this.setState({
-      currentRound: this.state.currentRound+1,
-      currentTime: moment.duration(this.state.baseTime),
+      currentRound: this.state.currentRound < this.state.sequence.rounds ? this.state.currentRound+1 : 1,
+      currentTime: this.state.workTime,
+      timer:setInterval(this.reduceTimer,1000)
+    })
+  }
+
+  completeSet() {
+    if(this.state.timer) {
+      clearInterval(this.state.timer)
+    }
+
+    this.setState({
+      currentSet: this.state.currentSet+1,
+      currentRound: 1,
+      currentTime: this.state.workTime,
       timer: setInterval(this.reduceTimer, 1000)
     })
   }
 
   completeTimer() {
+    console.log('yo!');
     if(this.state.timer) {
       clearInterval(this.state.timer)
     }
@@ -146,8 +189,22 @@ class App extends Component {
     this.setState({
       timerState: timerStates.COMPLETE,
       timer:null,
+      currentRound:1,
+      currentSet:1,
+    })
+  }
+
+  resetTimer() {
+    if(this.state.timer) {
+      clearInterval(this.state.timer);
+    }
+
+    this.setState({
+      timerState: timerStates.NOT_SET,
+      timer:null,
       currentTime: moment.duration(this.state.baseTime),
-      currentRound:1
+      currentRound:1,
+      currentSet: 1
     })
   }
 
@@ -177,10 +234,22 @@ class App extends Component {
     const val = e.target.value;
 
     if(e.target.id === 'startSound') {
+      this.playSound(sfx[val]);
       this.setState({startSound: sfx[val]});
     }
 
     if(e.target.id === 'endSound') {
+      this.playSound(sfx[val]);
+      this.setState({endSound: sfx[val]});
+    }
+
+    if(e.target.id === 'endSetSound') {
+      this.playSound(sfx[val]);
+      this.setState({endSound: sfx[val]});
+    }
+
+    if(e.target.id === 'completeSound') {
+      this.playSound(sfx[val]);
       this.setState({endSound: sfx[val]});
     }
 
@@ -197,6 +266,7 @@ class App extends Component {
         <Sequence
           seq={this.state.sequence}
           currentRound={this.state.currentRound}
+          currentSet={this.state.currentSet}
           />
         <Timer
           currentTime={this.state.currentTime}
@@ -205,14 +275,18 @@ class App extends Component {
           handleChange={this.handleChange}
           timerState={this.state.timerState}
           startTimer={this.startTimer}
-          stopTimer={this.stopTimer}
+          resetTimer={this.resetTimer}
           pauseTimer={this.pauseTimer}
           resumeTimer={this.resumeTimer}
+          completeTimer={this.completeTimer}
           currentRound={this.state.currentRound}
+          currentSet={this.state.currentSet}
           changeInterval={this.changeInterval}
           sfx={this.state.sfx}
           startSound={this.state.startSound}
           endSound={this.state.endSound}
+          endSetSound={this.state.endSetSound}
+          completeSound={this.state.completeSound}
           changeSfx={this.changeSfx}
           seq={this.state.sequence}
           />
